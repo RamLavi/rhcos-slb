@@ -21,28 +21,14 @@ macAddressList | String | List of MAC address should be set per host In the foll
 
 
 ### 2. Prepare the files
-- Base64 encode the `capture-macs.sh` file and paste the content into custom-config.fcc file into "base64_capture_macs_script_content" section. 
-
-    **TIP:** To update the content you can use:
-
-```
-export base64_capture_macs_script_content=$(cat capture-macs.sh|base64 -w 0) && envsubst <  custom-config.fcc.tmpl > custom-config.fcc
+- Create custom-config.ign and MCO manifests:
+```/bin/bash
+make build-manifest
 ```
 
-- Create the ign file from the custom-config.fcc: 
-```
-fcct custom-config.fcc > file.ign
-```
+- Upload `custom-config.ign` to a shared location which the OpenShift nodes can access.
 
-  - Upload `file.ign` to a shared location where the OpenShift nodes can access.
-
-- Base64 encode the `init-interfaces.sh` file and paste the content into each MCO file into "base64_script_content" section. 
-
-    **TIP:** To update the content you can use:
-
-```
-export base64_script_content=$(cat init-interfaces.sh|base64 -w 0) && envsubst <  mco_ovs_workers.yml.tmpl > mco_ovs_workers.yml && envsubst < mco_ovs_supervisor.yml.tmpl > mco_ovs_supervisor.yml
-```
+- Apply MCO files (MachineConfig) manually once the cluster is up or add it to the installation automation/pipeline.
 
 ### 3. Run the installation
 - Follow the guide to install a bare-metal cluster in the [OpenShift production documentation.
@@ -59,7 +45,7 @@ The test downloads the latest RHCOS image and runs network related tests, checki
 You can run these tests manually on Fedora by running the test script:
 ```bash
 sudo ./tests/setup.sh
-./tests/test-coreos.sh
+make test
 ```
 
 ## Additional Documentation 
